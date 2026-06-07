@@ -262,18 +262,38 @@ body::before {
 }
 .read-btn.mark-undone:hover { background: var(--red); color: #fff; }
 
-/* ===== PRINT BUTTON ===== */
-.fab-print {
-  position: fixed; bottom: 24px; left: 24px;
-  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
-  color: #fff; border: none; border-radius: 50px; padding: 13px 20px;
-  font-family: var(--font-body); font-size: 0.95rem; font-weight: 700;
-  cursor: pointer; box-shadow: 0 6px 20px rgba(184,134,11,0.4);
-  display: flex; align-items: center; gap: 8px; z-index: 200;
-  transition: transform 0.2s, box-shadow 0.2s;
+/* ===== FOOTER CREDIT ===== */
+.site-footer-credit {
+  text-align: center;
+  padding: 24px 16px 32px;
+  font-size: 0.88rem;
+  color: var(--text3);
+  letter-spacing: 0.02em;
+  font-family: var(--font-body);
 }
-.fab-print svg { flex-shrink: 0; }
-.fab-print:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(184,134,11,0.5); }
+.site-footer-credit .heart {
+  color: var(--red);
+  display: inline-block;
+  animation: heartbeat 1.4s ease infinite;
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.25); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.15); }
+  56% { transform: scale(1); }
+}
+.site-footer-credit a {
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 1px dashed var(--gold-muted);
+  transition: color var(--transition), border-color var(--transition);
+}
+.site-footer-credit a:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-light);
+}
 
 /* ===== STATES ===== */
 .state-msg { text-align: center; padding: 50px 20px; color: var(--text3); font-size: 1.1rem; }

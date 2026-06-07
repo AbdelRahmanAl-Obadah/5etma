@@ -224,18 +224,6 @@ function onSearch() {
   if (allMembers.length > 0) renderMembers(allMembers);
 }
 
-// ---- طباعة ----
-function printList() {
-  const container = document.querySelector(".container");
-  if (container) {
-    const now = new Date();
-    container.setAttribute("data-print-date",
-      now.toLocaleDateString("ar-EG", { weekday:"long", year:"numeric", month:"long", day:"numeric" })
-    );
-  }
-  window.print();
-}
-
 // ---- Helpers ----
 function toArabicNum(n) {
   return String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);

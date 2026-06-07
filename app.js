@@ -37,8 +37,10 @@ function toggleDarkMode() {
   updateDarkBtn(isDark);
 }
 function updateDarkBtn(isDark) {
-  const btn = document.getElementById('darkModeBtn');
-  if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+  const moon = document.getElementById('iconMoon');
+  const sun  = document.getElementById('iconSun');
+  if (moon) moon.style.display = isDark ? 'none' : '';
+  if (sun)  sun.style.display  = isDark ? '' : 'none';
 }
 
 // ---- إعدادات ----
@@ -68,9 +70,7 @@ function renderWeekBanner() {
     <div class="week-info">
       <span class="week-label">📅 الفترة الحالية</span>
       <span class="week-dates">${ws} — ${we}</span>
-      <span style="display:inline-block; margin-top:4px; font-size:0.88rem; color:var(--green); font-weight:600;">
-        🕊️ ${escHtml(khatmaName)}
-      </span>
+      <span class="khatma-name-display">🕊️ ${escHtml(khatmaName)}</span>
     </div>
     <div class="week-number-badge">الأسبوع ${toArabicNum(weekNum)}</div>
   `;
@@ -123,11 +123,19 @@ function renderCol(members) {
 
     let btnHtml = '';
     if (!isDone) {
-      btnHtml = `<button class="read-btn mark-done no-print" onclick="markDone('${m.id}')">✔️ تمت</button>`;
+      btnHtml = `<button class="read-btn mark-done no-print" onclick="markDone('${m.id}')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        تمت
+      </button>`;
     } else if (isMyRead) {
-      btnHtml = `<button class="read-btn mark-undone no-print" onclick="markUndone('${m.id}')">↩️ إلغاء</button>`;
+      btnHtml = `<button class="read-btn mark-undone no-print" onclick="markUndone('${m.id}')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.41"/></svg>
+        إلغاء
+      </button>`;
     } else {
-      btnHtml = `<button class="read-btn mark-locked no-print" disabled title="سُجِّلت من جهاز آخر">🔒</button>`;
+      btnHtml = `<button class="read-btn mark-locked no-print" disabled title="سُجِّلت من جهاز آخر">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </button>`;
     }
 
     return `

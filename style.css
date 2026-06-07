@@ -103,6 +103,7 @@ body::before {
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: background var(--transition); text-decoration: none;
 }
+.icon-btn svg { display: block; }
 .icon-btn:hover { background: rgba(255,255,255,0.28); }
 
 /* ===== CONTAINER ===== */
@@ -127,9 +128,19 @@ body::before {
 .week-dates { font-size: 1.05rem; font-weight: 700; color: var(--green); }
 .week-number-badge {
   background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
-  color: #fff; border-radius: 50px; padding: 7px 20px;
-  font-size: 0.95rem; font-weight: 700;
+  color: #fff; border-radius: 50px; padding: 10px 26px;
+  font-size: 1.25rem; font-weight: 900;
   box-shadow: 0 2px 8px rgba(184,134,11,0.3);
+  font-family: var(--font-display);
+}
+
+.khatma-name-display {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 1.15rem;
+  color: var(--green);
+  font-weight: 700;
+  font-family: var(--font-display);
 }
 
 /* ===== PROGRESS ===== */
@@ -168,6 +179,7 @@ body::before {
 .search-icon {
   position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
   color: var(--text3); font-size: 1.1rem; pointer-events: none;
+  display: flex; align-items: center;
 }
 
 /* ===== TWO COLUMNS ===== */
@@ -236,7 +248,10 @@ body::before {
   font-family: var(--font-body); font-size: 0.88rem; font-weight: 700;
   cursor: pointer; transition: all var(--transition); text-align: center;
   min-width: 80px; line-height: 1.3;
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
 }
+.mark-locked { min-width: 44px; }
+.read-btn svg { flex-shrink: 0; }
 .read-btn.mark-done {
   background: linear-gradient(135deg, var(--green-light) 0%, var(--green) 100%);
   color: #fff; box-shadow: 0 2px 8px rgba(45,106,79,0.3);
@@ -254,9 +269,10 @@ body::before {
   color: #fff; border: none; border-radius: 50px; padding: 13px 20px;
   font-family: var(--font-body); font-size: 0.95rem; font-weight: 700;
   cursor: pointer; box-shadow: 0 6px 20px rgba(184,134,11,0.4);
-  display: flex; align-items: center; gap: 7px; z-index: 200;
+  display: flex; align-items: center; gap: 8px; z-index: 200;
   transition: transform 0.2s, box-shadow 0.2s;
 }
+.fab-print svg { flex-shrink: 0; }
 .fab-print:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(184,134,11,0.5); }
 
 /* ===== STATES ===== */

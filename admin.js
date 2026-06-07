@@ -12,13 +12,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ---- Dark Mode ----
 function initDarkMode() {
-  if (localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark-mode');
-  }
+  const isDark = localStorage.getItem('darkMode') === 'true';
+  if (isDark) document.body.classList.add('dark-mode');
+  const moon = document.getElementById('iconMoon');
+  const sun  = document.getElementById('iconSun');
+  if (moon) moon.style.display = isDark ? 'none' : '';
+  if (sun)  sun.style.display  = isDark ? '' : 'none';
 }
 function toggleDarkMode() {
   const isDark = document.body.classList.toggle('dark-mode');
   localStorage.setItem('darkMode', isDark);
+  const moon = document.getElementById('iconMoon');
+  const sun  = document.getElementById('iconSun');
+  if (moon) moon.style.display = isDark ? 'none' : '';
+  if (sun)  sun.style.display  = isDark ? '' : 'none';
 }
 
 // ---- PIN Auth ----
@@ -104,9 +111,13 @@ async function loadKhatmaHistory() {
     }
     list.innerHTML = snap.docs.map((d, i) => {
       const k = d.data();
-      const dateStr = k.completedAt
-        ? new Date(k.completedAt.toDate()).toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' })
-        : '—';
+      let dateStr = '—';
+      if (k.completedAt) {
+        try { dateStr = new Date(k.completedAt.toDate()).toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' }); } catch(e) {}
+      }
+      if (dateStr === '—' && k.completedAtIso) {
+        try { dateStr = new Date(k.completedAtIso).toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' }); } catch(e) {}
+      }
       return `
         <div style="display:flex; align-items:center; gap:12px; padding:12px 14px;
                     background:var(--surface2); border-radius:10px; border:1px solid var(--border);">
@@ -181,10 +192,12 @@ async function completeKhatma() {
 
     // تسجيل الختمة المكتملة في سجل الختمات
     const khatmaRef = db.collection('khatmaat').doc();
+    const nowIso = new Date().toISOString();
     batch.set(khatmaRef, {
-      name:        khatmaName,
-      weekNumber:  currentWeekNum,
-      completedAt: firebase.firestore.FieldValue.serverTimestamp()
+      name:           khatmaName,
+      weekNumber:     currentWeekNum,
+      completedAt:    firebase.firestore.FieldValue.serverTimestamp(),
+      completedAtIso: nowIso
     });
 
     await batch.commit();

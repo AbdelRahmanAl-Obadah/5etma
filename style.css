@@ -151,7 +151,12 @@ body::before {
 }
 .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .progress-label { font-size: 1.05rem; font-weight: 700; }
-.progress-count { font-size: 1.3rem; font-weight: 900; color: var(--green); }
+.progress-header-right { display: flex; align-items: baseline; gap: 10px; }
+.progress-pct {
+  font-size: 1.6rem; font-weight: 900; color: var(--green);
+  font-family: var(--font-display); line-height: 1;
+}
+.progress-count { font-size: 0.9rem; font-weight: 600; color: var(--text3); }
 .progress-track { background: var(--bg2); border-radius: 50px; height: 18px; overflow: hidden; }
 .progress-fill {
   height: 100%;
@@ -262,6 +267,18 @@ body::before {
 }
 .read-btn.mark-undone:hover { background: var(--red); color: #fff; }
 
+/* loading state */
+.read-btn.btn-loading {
+  background: var(--bg2); color: var(--text3);
+  cursor: not-allowed; opacity: 0.8;
+  min-width: 52px;
+}
+.btn-spinner {
+  animation: btnSpin 0.7s linear infinite;
+  display: block;
+}
+@keyframes btnSpin { to { transform: rotate(360deg); } }
+
 /* ===== FOOTER CREDIT ===== */
 .site-footer-credit {
   text-align: center;
@@ -330,8 +347,32 @@ body::before {
   /* عمود واحد على الجوال */
   .members-columns { grid-template-columns: 1fr; }
 
-  .read-btn { min-width: auto; padding: 8px 10px; font-size: 0.82rem; }
-  .fab-print { bottom: 14px; left: 14px; padding: 11px 16px; font-size: 0.85rem; }
+  /* بطاقة الجوال — padding أكبر وزر تمت أكبر */
+  .member-card { padding: 14px 12px; gap: 10px; }
+  .member-name { font-size: 1.1rem; }
+
+  /* زر تمت أكبر وأسهل للضغط على الجوال */
+  .read-btn {
+    min-width: 70px;
+    padding: 11px 14px;
+    font-size: 0.95rem;
+    border-radius: 12px;
+  }
+  .mark-locked { min-width: 46px; padding: 11px; }
+
+  /* rank badge أصغر شوي على الجوال */
+  .rank-badge { width: 40px; height: 40px; font-size: 1rem; }
+
+  /* شريط التقدم */
+  .progress-pct { font-size: 1.3rem; }
+  .progress-track { height: 14px; }
+
+  /* week banner على الجوال عمودي */
+  .week-banner { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .week-number-badge { align-self: flex-end; }
+
+  /* search placeholder أصغر */
+  .search-input { font-size: 0.95rem; padding: 12px 46px 12px 16px; }
 }
 
 /* =====================================================

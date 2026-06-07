@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="theme-color" content="#2d6a4f">
+  <title>خدمة القرآن الكريم</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-controls">
+    <button class="icon-btn" id="darkModeBtn" onclick="toggleDarkMode()" title="تبديل المظهر">🌙</button>
+    <a class="icon-btn" href="admin.html" title="لوحة الأدمن">⚙️</a>
+  </div>
+  <div class="header-basmala">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+  <div class="header-title">📖 خدمة القرآن الكريم</div>
+  <div class="header-subtitle">متابعة أجزاء الأعضاء الثلاثين</div>
+</header>
+
+<main class="container">
+
+  <!-- معلومات الأسبوع -->
+  <div id="weekBanner" class="week-banner">
+    <div class="week-info">
+      <span class="week-label">📅 جارٍ التحميل...</span>
+    </div>
+  </div>
+
+  <!-- شريط التقدم -->
+  <div class="progress-section">
+    <div class="progress-header">
+      <span class="progress-label">📊 تقدم القراءة</span>
+      <span class="progress-count" id="progressCount">٠ من ٣٠</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- بحث -->
+  <div class="search-wrap no-print">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" class="search-input"
+      placeholder="ابحث عن اسم عضو..." oninput="onSearch()" autocomplete="off">
+  </div>
+
+  <!-- العمودان -->
+  <div id="membersColumns" class="members-columns">
+    <!-- العمود الأيمن: 1-15 -->
+    <div class="members-col" id="colRight"></div>
+    <!-- العمود الأيسر: 16-30 -->
+    <div class="members-col" id="colLeft"></div>
+  </div>
+
+  <!-- Loading state -->
+  <div id="loadingState" class="state-msg">
+    <div class="spinner"></div>
+    جارٍ تحميل البيانات...
+  </div>
+
+  <hr class="divider no-print">
+  <div class="admin-hint no-print">
+    🔒 <a href="admin.html">الدخول للوحة الأدمن</a>
+  </div>
+
+</main>
+
+<!-- زر الطباعة -->
+<button class="fab-print no-print" onclick="printList()">🖨️ طباعة القائمة</button>
+
+<!-- Toast -->
+<div id="toastEl" class="toast"></div>
+
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>لوحة الأدمن — خدمة القرآن</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+<!-- ===== PIN MODAL ===== -->
+<div id="pinOverlay" class="pin-overlay">
+  <div class="pin-modal">
+    <div class="pin-title">🔐 لوحة الأدمن</div>
+    <p class="pin-sub">أدخل رمز الدخول للمتابعة</p>
+    <input
+      type="password"
+      id="pinInput"
+      class="pin-input"
+      placeholder="••••"
+      maxlength="8"
+      autofocus
+    >
+    <p id="pinError" style="color:var(--red); font-size:0.95rem; margin-bottom:12px; min-height:22px;"></p>
+    <button class="btn btn-gold btn-full" onclick="checkPin()">
+      دخول ← 
+    </button>
+    <div style="margin-top:16px;">
+      <a href="index.html" style="color:var(--text3); font-size:0.9rem; text-decoration:none;">
+        ← العودة للصفحة الرئيسية
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADMIN CONTENT (hidden until auth) ===== -->
+<div id="adminContent" style="display:none;">
+
+  <!-- Header -->
+  <header class="admin-header">
+    <div style="position:absolute; left:16px; top:50%; transform:translateY(-50%); display:flex; gap:8px;">
+      <button class="icon-btn" onclick="toggleDarkMode()" title="تبديل المظهر">🌙</button>
+      <a class="icon-btn" href="index.html" title="الصفحة الرئيسية">🏠</a>
+    </div>
+    <div class="admin-header-title">⚙️ لوحة التحكم</div>
+    <div class="admin-header-sub">إدارة خدمة القرآن الكريم</div>
+  </header>
+
+  <div class="container">
+
+    <!-- ===== إعدادات الدورة ===== -->
+    <div class="admin-section">
+      <div class="section-title">📅 إعدادات الأسبوع الحالي</div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 120px; gap:16px; align-items:end;">
+        <div class="field-group" style="margin-bottom:0">
+          <label class="field-label" for="weekStart">📅 بداية الأسبوع</label>
+          <input type="date" id="weekStart" class="field-input">
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label class="field-label" for="weekEnd">📅 نهاية الأسبوع</label>
+          <input type="date" id="weekEnd" class="field-input">
+        </div>
+        <div class="field-group" style="margin-bottom:0">
+          <label class="field-label" for="weekNumber">🔢 رقم الأسبوع</label>
+          <input type="number" id="weekNumber" class="field-input" min="1" max="200" value="1" style="text-align:center;">
+        </div>
+      </div>
+
+      <div style="margin-top:20px;">
+        <button class="btn btn-primary" onclick="saveSettings()">
+          💾 حفظ الإعدادات
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== تمت الختمة ===== -->
+    <div class="admin-section" style="border: 2px solid var(--gold-muted); background: linear-gradient(135deg, var(--surface) 80%, rgba(184,134,11,0.06));">
+      <div class="section-title" style="color:var(--gold);">🏆 إتمام الختمة والانتقال لأسبوع جديد</div>
+      <p style="color:var(--text2); margin-bottom:8px; font-size:1rem; line-height:2;">
+        عند اكتمال القراءة لهذا الأسبوع، اضغط الزر أدناه. سيقوم النظام بـ:
+      </p>
+      <ul style="color:var(--text3); margin-bottom:20px; padding-right:20px; line-height:2.4; font-size:0.95rem; list-style:none;">
+        <li>📖 تقديم كل عضو لجزء جديد (الجزء +١ دورياً)</li>
+        <li>🔄 إعادة ضبط حالات القراءة للجميع</li>
+        <li>📅 تحديث تاريخ الأسبوع تلقائياً (+٧ أيام)</li>
+        <li>🔢 رفع رقم الأسبوع</li>
+      </ul>
+      <button class="btn btn-gold" onclick="completeKhatma()" style="font-size:1.1rem; padding:14px 28px;">
+        🏆 تمت الختمة — ابدأ أسبوعاً جديداً
+      </button>
+    </div>
+
+    <!-- ===== إضافة أعضاء بالجملة ===== -->
+    <div class="admin-section">
+      <div class="section-title">📋 تهيئة الأعضاء (إضافة بالجملة)</div>
+
+      <p style="color:var(--text3); margin-bottom:12px; font-size:0.95rem;">
+        ⚠️ هذه الخاصية تمسح جميع الأعضاء الحاليين وتُنشئ قائمة جديدة.
+        أدخل الأسماء سطراً سطراً (حد أقصى 30 اسم).
+      </p>
+
+      <div class="field-group">
+        <label class="field-label">أسماء الأعضاء (سطر لكل اسم)</label>
+        <textarea
+          id="bulkNames"
+          class="field-input"
+          rows="10"
+          placeholder="أحمد محمد
+فاطمة علي
+عبدالرحمن خالد
+..."
+          style="resize:vertical; line-height:2;"
+        ></textarea>
+      </div>
+
+      <button class="btn btn-gold" onclick="bulkAddMembers()">
+        🚀 تهيئة القائمة (سيُمسح القديم)
+      </button>
+    </div>
+
+    <!-- ===== إدارة الأعضاء ===== -->
+    <div class="admin-section">
+      <div class="section-title">👥 إدارة الأعضاء الحاليين</div>
+
+      <div id="membersAdminList" class="members-admin-list">
+        <div class="state-msg" style="padding:20px">
+          <div class="spinner"></div>
+          جارٍ التحميل...
+        </div>
+      </div>
+
+      <!-- إضافة عضو واحد -->
+      <hr class="divider">
+      <div class="section-title" style="font-size:1.1rem; margin-bottom:12px;">
+        ➕ إضافة عضو جديد
+      </div>
+      <div class="add-member-row">
+        <input
+          type="text"
+          id="newMemberName"
+          class="field-input"
+          placeholder="اسم العضو الجديد"
+        >
+        <button class="btn btn-primary" onclick="addMember()">إضافة</button>
+      </div>
+    </div>
+
+    <!-- ===== إعادة الضبط ===== -->
+    <div class="admin-section">
+      <div class="section-title">🔄 إعادة الضبط</div>
+      <p style="color:var(--text3); margin-bottom:16px; font-size:0.95rem;">
+        عند بداية أسبوع جديد، أعد ضبط حالات القراءة لجميع الأعضاء.
+      </p>
+      <button class="btn btn-danger" onclick="resetAllReadStatus()">
+        🔄 إعادة ضبط حالات القراءة للجميع
+      </button>
+    </div>
+
+    <!-- ===== معلومات ===== -->
+    <div class="admin-section" style="background:var(--surface2);">
+      <div class="section-title">ℹ️ معلومات النظام</div>
+      <div style="color:var(--text2); line-height:2.2; font-size:1rem;">
+        <p>🔑 رمز الدخول: مُخزّن في <code>firebase-config.js</code> (متغير <code>ADMIN_PIN</code>)</p>
+        <p>📦 Collection الأعضاء: <code>members</code></p>
+        <p>⚙️ Collection الإعدادات: <code>settings</code> / مستند <code>general</code></p>
+        <p>🔄 الأجزاء تتحرك تلقائياً كل أسبوع بناءً على <strong>تاريخ بداية الدورة</strong></p>
+        <p>📱 الموقع يدعم التحديث الفوري Real-Time</p>
+      </div>
+    </div>
+
+  </div><!-- /container -->
+</div><!-- /adminContent -->
+
+<!-- Toast -->
+<div id="toastEl" class="toast"></div>
+
+<!-- Scripts -->
+<script src="firebase-config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+// firestore.rules
+// قواعد أمان Firestore لخدمة القرآن الكريم
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===== الأعضاء =====
+    // القراءة: مفتوحة للجميع (لعرض الأسماء والأجزاء)
+    // الكتابة: مسموح للجميع (حتى يستطيع الجميع تسجيل القراءة)
+    // ملاحظة: يمكن تقييد الكتابة لحقلي done و readAt فقط للمستخدمين العاديين
+    match /members/{memberId} {
+      allow read: if true;
+      // السماح للجميع بتحديث حالة القراءة فقط
+      allow update: if request.resource.data.diff(resource.data).affectedKeys()
+                       .hasOnly(['done', 'readAt']);
+      // العمليات الإدارية: لا تتحقق من الهوية هنا (PIN في المتصفح)
+      // في بيئة الإنتاج، استخدم Firebase Auth للأدمن
+      allow create, delete: if true;
+      allow update: if true; // الأدمن يحتاج تحديث كل الحقول
+    }
+
+    // ===== الإعدادات =====
+    // القراءة: للجميع (لعرض تواريخ الأسبوع)
+    // الكتابة: مفتوحة (PIN يحمي من المتصفح)
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // منع الوصول لأي شيء آخر
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// =====================================================
+// ملاحظة مهمة للإنتاج:
+// هذه القواعد بسيطة وتعتمد على PIN في المتصفح.
+// لمزيد من الأمان في بيئة الإنتاج، يُنصح بـ:
+// 1. تفعيل Firebase Authentication للأدمن
+// 2. تقييد عمليات الإنشاء والحذف للمستخدمين المصادق عليهم فقط
+// =====================================================

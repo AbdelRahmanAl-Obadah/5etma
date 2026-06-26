@@ -73,8 +73,9 @@ function renderWeekBanner() {
     <div class="week-info">
       <span class="week-label">📅 الفترة الحالية</span>
       <span class="week-dates">${ws} — ${we}</span>
-      <span class="khatma-name-display">🕊️ ${escHtml(khatmaName)}</span>
-    </div>
+<span style="display:inline-block; margin-top:4px; font-size:0.88rem; color:var(--green); font-weight:600;">
+  🕊️ عن روح المرحوم ${escHtml(khatmaName)}
+</span>    </div>
     <div class="week-number-badge">الأسبوع ${toArabicNum(weekNum)}</div>
   `;
 }
@@ -360,8 +361,9 @@ function renderWeekBanner() {
     <div class="week-info">
       <span class="week-label">📅 الفترة الحالية</span>
       <span class="week-dates">${ws} — ${we}</span>
-      <span class="khatma-name-display">🕊️ ${escHtml(khatmaName)}</span>
-    </div>
+<span style="display:inline-block; margin-top:4px; font-size:0.88rem; color:var(--green); font-weight:600;">
+  🕊️ عن روح المرحوم ${escHtml(khatmaName)}
+</span>    </div>
     <div class="week-number-badge">الأسبوع ${toArabicNum(weekNum)}</div>
   `;
 }

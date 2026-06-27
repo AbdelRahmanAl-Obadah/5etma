@@ -82,13 +82,15 @@ function renderWeekBanner() {
     <div class="week-info">
       <span class="week-label">📅 الفترة الحالية</span>
       <span class="week-dates">${ws} — ${we}</span>
-      <span class="banner-khatma-for">الختمة لـ ${part30Name}</span>
-      <span class="banner-ruh-label">🕊️ عن روح المرحوم</span>
-      <span class="banner-ruh-name">${escHtml(khatmaName)}</span>
+      <span class="banner-khatma-row">
+        <span class="banner-khatma-for">الختمة لـ ${part30Name}</span>
+        <span class="banner-dot">•</span>
+        <span class="banner-ruh-label">🕊️ عن روح المرحوم</span>
+        <span class="banner-ruh-name">${escHtml(khatmaName)}</span>
+      </span>
     </div>
     <div class="week-number-badge">الأسبوع ${toArabicNum(weekNum)}</div>
   `;
-  console.log('[Banner] rendered HTML:', el.innerHTML);
 }
 
 // ---- الاستماع للأعضاء ----
@@ -344,123 +346,6 @@ function updateDarkBtn(isDark) {
   const sun  = document.getElementById('iconSun');
   if (moon) moon.style.display = isDark ? 'none' : '';
   if (sun)  sun.style.display  = isDark ? '' : 'none';
-}
-
-// ---- إعدادات ----
-function listenSettings() {
-  if (settingsListener) settingsListener();
-  settingsListener = db.collection(SETTINGS_COLLECTION).doc(SETTINGS_DOC)
-    .onSnapshot(doc => {
-      currentSettings = doc.exists ? doc.data() : {};
-      renderWeekBanner();
-      if (allMembers.length > 0) renderMembers(allMembers);
-    });
-}
-
-function getCurrentPart(originalPart) {
-  return originalPart;
-}
-
-// ---- شريط الأسبوع ----
-function renderWeekBanner() {
-  const weekNum    = currentSettings.weekNumber || 1;
-  const khatmaName = currentSettings.khatmaName || 'عن روح جمال الدويري';
-  const ws = currentSettings.weekStart ? formatDateAr(currentSettings.weekStart) : '—';
-  const we = currentSettings.weekEnd   ? formatDateAr(currentSettings.weekEnd)   : '—';
-  const el = document.getElementById('weekBanner');
-  if (!el) return;
-  el.innerHTML = `
-    <div class="week-info">
-      <span class="week-label">📅 الفترة الحالية</span>
-      <span class="week-dates">${ws} — ${we}</span>
-<span style="display:inline-block; margin-top:4px; font-size:0.88rem; color:var(--green); font-weight:600;">
-  🕊️ عن روح المرحوم ${escHtml(khatmaName)}
-</span>    </div>
-    <div class="week-number-badge">الأسبوع ${toArabicNum(weekNum)}</div>
-  `;
-}
-
-// ---- الاستماع للأعضاء ----
-function listenMembers() {
-  if (membersListener) membersListener();
-  membersListener = db.collection(MEMBERS_COLLECTION)
-    .orderBy('order')
-    .onSnapshot(snapshot => {
-      allMembers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      document.getElementById('loadingState').style.display = 'none';
-      document.getElementById('membersColumns').style.display = 'grid';
-      renderWeekBanner();
-      renderMembers(allMembers);
-    }, err => {
-      console.error(err);
-      document.getElementById('loadingState').innerHTML = '⚠️ تعذّر تحميل البيانات';
-    });
-}
-
-// ---- عرض الأعضاء في عمودين ----
-function renderMembers(members) {
-  const query = (document.getElementById('searchInput')?.value || '').trim();
-
-  const filtered = query
-    ? members.filter(m => m.name && m.name.includes(query))
-    : members;
-
-  const sorted = [...filtered].map(m => ({
-    ...m,
-    currentPart: getCurrentPart(m.originalPart || m.order || 1)
-  })).sort((a, b) => a.currentPart - b.currentPart);
-
-  const right = sorted.filter(m => m.currentPart <= 15);
-  const left  = sorted.filter(m => m.currentPart > 15);
-
-  document.getElementById('colRight').innerHTML = renderCol(right);
-  document.getElementById('colLeft').innerHTML  = renderCol(left);
-
-  updateProgress(members);
-}
-
-function renderCol(members) {
-  if (members.length === 0) return '';
-  return members.map((m, i) => {
-    const isDone   = m.done === true;
-    const isMyRead = isDone && m.doneByDevice === MY_DEVICE_ID;
-    const readTime = m.readAt ? formatDateTime(m.readAt) : '';
-
-    let btnHtml = '';
-    if (!isDone) {
-      btnHtml = `<button class="read-btn mark-done no-print" onclick="markDone('${m.id}')">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        تمت
-      </button>`;
-    } else if (isMyRead) {
-      btnHtml = `<button class="read-btn mark-undone no-print" onclick="markUndone('${m.id}')">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.41"/></svg>
-        إلغاء
-      </button>`;
-    } else {
-      btnHtml = `<button class="read-btn mark-locked no-print" disabled title="سُجِّلت من جهاز آخر">
-        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </button>`;
-    }
-
-    return `
-      <div class="member-card ${isDone ? 'done' : ''}" id="card-${m.id}"
-           style="animation-delay:${i * 25}ms">
-        <div class="rank-badge">${toArabicNum(m.currentPart)}</div>
-        <div class="member-info">
-          <div class="member-name">${escHtml(m.name)}</div>
-          <div class="member-meta">
-            <span class="part-badge">الجزء ${toArabicNum(m.currentPart)}</span>
-            <span class="status-text ${isDone ? 'done-txt' : ''}">
-              ${isDone ? '✅ تمت القراءة' : '⏳ لم يُقرأ'}
-            </span>
-          </div>
-          ${readTime ? `<div class="read-time">🕐 ${readTime}</div>` : ''}
-        </div>
-        ${btnHtml}
-      </div>
-    `;
-  }).join('');
 }
 
 // ---- تسجيل القراءة ----

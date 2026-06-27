@@ -599,25 +599,50 @@ body::before {
     margin: 14mm 12mm 14mm 12mm;
   }
 }
+
 /* ===== Banner — تفاصيل الختمة ===== */
-.banner-khatma-for {
-  display: block;
+.banner-khatma-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
   margin-top: 6px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+}
+.banner-khatma-for {
   font-weight: 700;
   color: var(--text);
 }
+.banner-dot {
+  color: var(--gold);
+  font-size: 1rem;
+  line-height: 1;
+}
 .banner-ruh-label {
-  display: block;
-  margin-top: 4px;
-  font-size: 0.85rem;
   color: var(--green);
   font-weight: 600;
 }
 .banner-ruh-name {
-  display: block;
-  font-size: 1rem;
   font-weight: 700;
   color: var(--text);
-  margin-top: 2px;
+}
+
+/* ===== كارت الجزء ٣٠ ===== */
+.part-30-card {
+  border: 1.5px solid var(--gold-muted) !important;
+  background: linear-gradient(135deg, var(--surface) 70%, rgba(184,134,11,0.07)) !important;
+}
+.khatma-label-top {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+.khatma-label-bottom {
+  font-size: 0.78rem;
+  color: var(--green);
+  font-weight: 600;
+  margin-top: 3px;
+  margin-bottom: 2px;
 }

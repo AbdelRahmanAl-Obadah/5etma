@@ -71,7 +71,11 @@ function renderWeekBanner() {
   if (!el) return;
 
   // اسم صاحب الجزء ٣٠ من قائمة الأعضاء
+  console.log('[Banner] allMembers count:', allMembers.length);
+  console.log('[Banner] allMembers parts:', allMembers.map(m => m.originalPart || m.order));
   const part30Member = allMembers.find(m => (m.originalPart || m.order) === 30);
+  console.log('[Banner] part30Member:', part30Member);
+  console.log('[Banner] khatmaName:', khatmaName);
   const part30Name = part30Member ? escHtml(part30Member.name) : '—';
 
   el.innerHTML = `
@@ -84,6 +88,7 @@ function renderWeekBanner() {
     </div>
     <div class="week-number-badge">الأسبوع ${toArabicNum(weekNum)}</div>
   `;
+  console.log('[Banner] rendered HTML:', el.innerHTML);
 }
 
 // ---- الاستماع للأعضاء ----

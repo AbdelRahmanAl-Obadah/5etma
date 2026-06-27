@@ -599,3 +599,25 @@ body::before {
     margin: 14mm 12mm 14mm 12mm;
   }
 }
+/* ===== Banner — تفاصيل الختمة ===== */
+.banner-khatma-for {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.banner-ruh-label {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--green);
+  font-weight: 600;
+}
+.banner-ruh-name {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-top: 2px;
+}

@@ -64,18 +64,24 @@ function getCurrentPart(originalPart) {
 // ---- شريط الأسبوع ----
 function renderWeekBanner() {
   const weekNum    = currentSettings.weekNumber || 1;
-  const khatmaName = currentSettings.khatmaName || 'عن روح جمال الدويري';
+  const khatmaName = currentSettings.khatmaName || '';
   const ws = currentSettings.weekStart ? formatDateAr(currentSettings.weekStart) : '—';
   const we = currentSettings.weekEnd   ? formatDateAr(currentSettings.weekEnd)   : '—';
   const el = document.getElementById('weekBanner');
   if (!el) return;
+
+  // اسم صاحب الجزء ٣٠ من قائمة الأعضاء
+  const part30Member = allMembers.find(m => (m.originalPart || m.order) === 30);
+  const part30Name = part30Member ? escHtml(part30Member.name) : '—';
+
   el.innerHTML = `
     <div class="week-info">
       <span class="week-label">📅 الفترة الحالية</span>
       <span class="week-dates">${ws} — ${we}</span>
-<span style="display:inline-block; margin-top:4px; font-size:0.88rem; color:var(--green); font-weight:600;">
-  🕊️ عن روح المرحوم ${escHtml(khatmaName)}
-</span>    </div>
+      <span class="banner-khatma-for">الختمة لـ ${part30Name}</span>
+      <span class="banner-ruh-label">🕊️ عن روح المرحوم</span>
+      <span class="banner-ruh-name">${escHtml(khatmaName)}</span>
+    </div>
     <div class="week-number-badge">الأسبوع ${toArabicNum(weekNum)}</div>
   `;
 }
@@ -89,6 +95,7 @@ function listenMembers() {
       allMembers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('membersColumns').style.display = 'grid';
+      renderWeekBanner();
       renderMembers(allMembers);
     }, err => {
       console.error(err);
@@ -377,6 +384,7 @@ function listenMembers() {
       allMembers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       document.getElementById('loadingState').style.display = 'none';
       document.getElementById('membersColumns').style.display = 'grid';
+      renderWeekBanner();
       renderMembers(allMembers);
     }, err => {
       console.error(err);

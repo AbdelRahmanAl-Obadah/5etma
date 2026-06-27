@@ -126,6 +126,7 @@ async function loadKhatmaHistory() {
           </div>
           <div style="flex:1;">
             <div style="font-weight:700; color:var(--text); font-size:1rem;">🕊️ ${escHtml(k.name)}</div>
+
             <div style="font-size:0.82rem; color:var(--text3); margin-top:2px;">
               الأسبوع ${toArabicNum(k.weekNumber || '—')} — ${dateStr}
             </div>

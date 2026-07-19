@@ -85,7 +85,7 @@ function renderWeekBanner() {
       <span class="banner-khatma-row">
         <span class="banner-khatma-for">الختمة لـ ${part30Name}</span>
         <span class="banner-dot">•</span>
-        <span class="banner-ruh-label">🕊️ عن روح المرحوم</span>
+        <span class="banner-ruh-label">🕊️ عن روح </span>
         <span class="banner-ruh-name">${escHtml(khatmaName)}</span>
       </span>
     </div>

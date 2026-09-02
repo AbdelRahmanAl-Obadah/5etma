@@ -74,8 +74,9 @@
           <input type="number" id="weekNumber" class="field-input" min="1" max="200" value="1" style="text-align:center;">
         </div>
       </div>
-      <div style="margin-top:20px;">
+      <div style="margin-top:20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="saveSettings()">💾 حفظ الإعدادات</button>
+        <button class="btn btn-danger" onclick="goToPreviousWeek()">⏮️ الرجوع للأسبوع السابق</button>
       </div>
     </div>
 
@@ -149,6 +150,18 @@
       <div class="add-member-row">
         <input type="text" id="newMemberName" class="field-input" placeholder="اسم العضو الجديد">
         <button class="btn btn-primary" onclick="addMember()">إضافة</button>
+      </div>
+    </div>
+
+    <!-- ===== تحريك الأجزاء ===== -->
+    <div class="admin-section">
+      <div class="section-title">🔀 تحريك الأجزاء (بدون تسجيل ختمة)</div>
+      <p style="color:var(--text3); margin-bottom:16px; font-size:0.95rem;">
+        يحرّك جزء كل عضو خطوة واحدة فقط (يدور تلقائياً بين ١ و ٣٠)، دون التأثير على الأسبوع أو سجل الختمات.
+      </p>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="shiftMembersParts(-1)">◀️ إرجاع الأجزاء جزءاً واحداً</button>
+        <button class="btn btn-primary" onclick="shiftMembersParts(1)">▶️ تقديم الأجزاء جزءاً واحداً</button>
       </div>
     </div>
 

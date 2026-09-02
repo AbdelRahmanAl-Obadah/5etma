@@ -221,6 +221,74 @@ async function completeKhatma() {
   }
 }
 
+// ---- الرجوع للأسبوع السابق ----
+async function goToPreviousWeek() {
+  const currentWeekNum = parseInt(document.getElementById('weekNumber')?.value) || 1;
+  if (currentWeekNum <= 1) {
+    showToast('⚠️ أنت بالفعل في الأسبوع الأول', true);
+    return;
+  }
+  if (!confirm(`هل تريد الرجوع من الأسبوع ${toArabicNum(currentWeekNum)} إلى الأسبوع ${toArabicNum(currentWeekNum - 1)}؟\n\n(لن يتم تعديل الأجزاء أو سجل الختمات، فقط رقم الأسبوع وتواريخه)`)) return;
+
+  const weekStart = getVal('weekStart');
+  const weekEnd   = getVal('weekEnd');
+  let newWeekStart = weekStart, newWeekEnd = weekEnd;
+
+  if (weekStart && weekEnd) {
+    const ds = new Date(weekStart + 'T00:00:00');
+    ds.setDate(ds.getDate() - 7);
+    newWeekStart = ds.toISOString().split('T')[0];
+
+    const de = new Date(weekEnd + 'T00:00:00');
+    de.setDate(de.getDate() - 7);
+    newWeekEnd = de.toISOString().split('T')[0];
+  }
+
+  const newWeekNum = currentWeekNum - 1;
+
+  try {
+    await db.collection(SETTINGS_COLLECTION).doc(SETTINGS_DOC).set({
+      weekNumber: newWeekNum,
+      weekStart:  newWeekStart,
+      weekEnd:    newWeekEnd,
+      updatedAt:  firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    setVal('weekStart', newWeekStart);
+    setVal('weekEnd', newWeekEnd);
+    const wnEl = document.getElementById('weekNumber');
+    if (wnEl) wnEl.value = newWeekNum;
+
+    showToast(`⏮️ تم الرجوع للأسبوع ${toArabicNum(newWeekNum)}`);
+  } catch (e) {
+    showToast('❌ فشلت العملية', true);
+    console.error(e);
+  }
+}
+
+// ---- تحريك الأجزاء (بدون ختمة) ----
+async function shiftMembersParts(direction) {
+  const label = direction === 1 ? 'تقديم' : 'إرجاع';
+  if (!confirm(`هل تريد ${label} جزء كل عضو خطوة واحدة؟`)) return;
+  try {
+    const snap = await db.collection(MEMBERS_COLLECTION).get();
+    const batch = db.batch();
+    snap.docs.forEach(d => {
+      const current = d.data().originalPart || d.data().order || 1;
+      let next = current + direction;
+      if (next > 30) next = 1;
+      if (next < 1)  next = 30;
+      batch.update(d.ref, { originalPart: next });
+    });
+    await batch.commit();
+    showToast(`✅ تم ${label} أجزاء جميع الأعضاء`);
+    await loadMembers();
+  } catch (e) {
+    showToast('❌ فشلت العملية', true);
+    console.error(e);
+  }
+}
+
 // ---- الأعضاء ----
 async function loadMembers() {
   try {
